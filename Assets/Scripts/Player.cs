@@ -16,9 +16,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private KitchenObject kitchenObject;
 
     public event EventHandler OnPickedSomething;
-    public event EventHandler <OnSelectedCounterChangedEventArtgs> OnSelectedCounterChanged;
+    public event EventHandler<OnSelectedCounterChangedEventArtgs> OnSelectedCounterChanged;
 
-    public class OnSelectedCounterChangedEventArtgs: EventArgs
+    public class OnSelectedCounterChangedEventArtgs : EventArgs
     {
         public BaseCounter selectedCounter;
     }
@@ -39,9 +39,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void GameInput_OnInteracrAlternateAction(object sender, EventArgs e)
     {
-        if (!KitchenGameManager.Instance.IsGamePlaying()) 
-        { 
-            return; 
+        if (!KitchenGameManager.Instance.IsGamePlaying())
+        {
+            return;
         }
 
         if (selectedCounter != null)
@@ -107,7 +107,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
             SetSelectedCounter(null);
         }
     }
-    private void HandleMovement() 
+    private void HandleMovement()
     {
         Vector2 inputVector = gameInput.GetMovementVectorNormalized();
 
@@ -124,8 +124,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
             //Attempt only X movement
             Vector3 moveDirX = new Vector3(moveDir.x, 0f, 0f).normalized;
-            canMove = moveDir.x !=0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
-
+            canMove = (moveDir.x < -0.5f || moveDir.x > +0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
+            //moveDir.x < -0.5f || moveDir.x > +0.5f
             if (canMove)
             {
                 //Can move only on the X
@@ -137,8 +137,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
                 //Attempt only Z movement
                 Vector3 moveDirZ = new Vector3(0f, 0f, moveDir.z).normalized;
-                canMove = moveDir.z !=0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
-
+                canMove = (moveDir.z < -0.5f || moveDir.z > +0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
+                //moveDir.z !=0
                 if (canMove)
                 {
                     //Can move only on the Z
