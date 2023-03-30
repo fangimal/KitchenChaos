@@ -15,6 +15,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
 
+    public event EventHandler OnPickedSomething;
     public event EventHandler <OnSelectedCounterChangedEventArtgs> OnSelectedCounterChanged;
 
     public class OnSelectedCounterChangedEventArtgs: EventArgs
@@ -38,6 +39,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void GameInput_OnInteracrAlternateAction(object sender, EventArgs e)
     {
+        if (!KitchenGameManager.Instance.IsGamePlaying()) 
+        { 
+            return; 
+        }
+
         if (selectedCounter != null)
         {
             selectedCounter.InteractAlternate(this);
@@ -46,6 +52,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void GameInput_OnInteracrAction(object sender, EventArgs e)
     {
+        if (!KitchenGameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
+
         if (selectedCounter != null)
         {
             selectedCounter.Interact(this);
@@ -139,6 +150,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
                 }
             }
         }
+
         if (canMove)
         {
             transform.position += moveDir * moveDistance;
@@ -146,6 +158,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
         isWalking = moveDir != Vector3.zero;
         float rotateSpeed = 10f;
+
         transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * rotateSpeed);
     }
 
@@ -167,6 +180,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         this.kitchenObject = kitchenObject;
+
+        if (kitchenObject != null)
+        {
+            OnPickedSomething?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public KitchenObject GetKitchenObject() { return kitchenObject; }
